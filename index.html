@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>PowerLifting Blog</title>
+    <link rel="stylesheet" href="/style.css">
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        .pressed { background-color: lightgrey; }
+    </style>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script type="text/babel"> 
+
+    const Header = () => {
+      const styles = {
+
+      }
+      return (
+        <header style={styles}>
+          WELCOME TO MY POWERLIFTING BLOG
+        </header>
+      )
+    }
+
+    const Footer = () => {
+      const styles = {
+
+      }
+      return (
+        <footer style={styles}>
+          Copyright 2024 UVG
+        </footer>
+      )
+    }
+
+    const Post = ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category }) => {
+      return (
+        <li>
+          <h1>{title}</h1>
+          <p>{content}</p>
+          <p>{competitor_name}</p>
+          <p>{top_squat}</p>
+          <p>{top_bench}</p>
+          <p>{top_deadlift}</p>
+          <p>{category}</p>
+        </li>
+      )
+    }
+
+    const Posts = () => {
+      const styles = {
+
+      }
+      const [ posts, setPosts ] = React.useState([])
+
+      const getPosts = async () => {
+        const apiResponse = await fetch('https://api.tiburoncin.lat/22119/posts')
+        const jsonPosts = await apiResponse.json()
+        const formattedPosts = jsonPosts.map(
+          ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category }) => ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category })
+        ) 
+        setPosts(formattedPosts)
+      }
+ 
+      React.useEffect(() => {
+        getPosts()
+      }, [])
+
+      if (posts.length === 0) {
+        return (
+          <ul style={styles}>
+            <li>Loading...</li>
+          </ul>
+        )
+      }
+   
+      return (
+        <ul style={styles}>
+          {posts.map(({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category}) => <Post title={title} content={content} competitor_name={competitor_name} top_squat={top_squat} top_bench={top_bench} top_deadlift={top_deadlift} category={category} />)}   
+        </ul>
+      )
+    }
+
+    const App = () => {
+      const styles = {
+
+      }
+      return (
+        <main style={styles}>
+          <Header />
+          <Posts />
+          <Footer />
+        </main>
+      )
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'))
+    root.render(<App />)
+    </script>
+</body>
+</html>
