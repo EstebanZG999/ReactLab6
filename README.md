@@ -29,7 +29,7 @@ Este proyecto se ejecuta directamente en el navegador y no requiere instalación
 
 ## Créditos
 
-Desarrollado por [Tu Nombre], 2024. Derechos de autor de la Universidad del Valle de Guatemala (UVG).
+Desarrollado por Esteban Zambrano 2024. Derechos de autor de la Universidad del Valle de Guatemala (UVG).
 
 ## Licencia
 
