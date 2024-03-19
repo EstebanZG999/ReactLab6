@@ -38,25 +38,35 @@
       )
     }
 
-    const Post = ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category }) => {
-      return (
-        <li>
-          <h1>{title}</h1>
-          <p>{content}</p>
-          <p>{competitor_name}</p>
-          <p>{top_squat}</p>
-          <p>{top_bench}</p>
-          <p>{top_deadlift}</p>
-          <p>{category}</p>
-        </li>
-      )
-    }
+    const Post = ({
+    title, content, competitor_name, top_squat, top_bench, top_deadlift, category
+    }) => {
+    const defaultImageUrl = "/Images/powerlifting.jpg"; 
+    const tagClasses = `tag ${category.toLowerCase()}`;
+
+    return (
+        <div className="card">
+        <div className="card-header">
+            <img src={defaultImageUrl} alt="Default" />
+        </div>
+        <div className="card-body">
+            <span className={tagClasses}>Category {category} </span> 
+            <h4>{title}</h4>
+            <p>{content}</p>
+            <div className="user-info">
+            <p>Competidor: {competitor_name}</p>
+            <p>Top Squat: {top_squat}</p>
+            <p>Top Bench: {top_bench}</p>
+            <p>Top Deadlift: {top_deadlift}</p>
+            </div>
+        </div>
+        </div>
+    );
+    };
+
 
     const Posts = () => {
-      const styles = {
-
-      }
-      const [ posts, setPosts ] = React.useState([])
+        const [posts, setPosts] = React.useState([]);
 
       const getPosts = async () => {
         const apiResponse = await fetch('https://api.tiburoncin.lat/22119/posts')
@@ -65,25 +75,25 @@
           ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category }) => ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category })
         ) 
         setPosts(formattedPosts)
+
+        
       }
  
       React.useEffect(() => {
-        getPosts()
-      }, [])
+        getPosts();
+    }, []);
 
-      if (posts.length === 0) {
-        return (
-          <ul style={styles}>
-            <li>Loading...</li>
-          </ul>
-        )
-      }
-   
-      return (
-        <ul style={styles}>
-          {posts.map(({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category}) => <Post title={title} content={content} competitor_name={competitor_name} top_squat={top_squat} top_bench={top_bench} top_deadlift={top_deadlift} category={category} />)}   
-        </ul>
-      )
+    if (posts.length === 0) {
+        return <div>Loading...</div>;
+    }
+
+    return (
+        <div className="container">
+        {posts.map((post, index) => (
+            <Post key={index} {...post} />
+        ))}
+        </div>
+    );
     }
 
     const App = () => {
