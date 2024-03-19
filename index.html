@@ -166,10 +166,10 @@
             margin: 'auto',
         };
         const [posts, setPosts] = React.useState([]);
-        const [isLoading, setIsLoading] = React.useState(true); // Agrega un estado para manejar la carga
+        const [isLoading, setIsLoading] = React.useState(true); 
 
         const getPosts = async () => {
-            setIsLoading(true); // Inicia la carga
+            setIsLoading(true); 
             try {
                 const apiResponse = await fetch('https://api.tiburoncin.lat/22119/posts');
                 if (!apiResponse.ok) {
@@ -179,9 +179,9 @@
                 setPosts(jsonPosts);
             } catch (error) {
                 console.error("Error fetching posts:", error);
-                // Maneja el error aquí, si es necesario
+                
             } finally {
-                setIsLoading(false); // Finaliza la carga independientemente del resultado
+                setIsLoading(false); 
             }
         };
 
@@ -194,7 +194,7 @@
         }
 
         if (!isLoading && posts.length === 0) {
-            // Muestra un "empty state" cuando no hay posts
+            
             return <div>No hay posts disponibles.</div>;
         }
 
