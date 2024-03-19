@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <title>PowerLifting Blog</title>
-    <link rel="stylesheet" href="/style.css">
     <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <script src="https://unpkg.com/prop-types/prop-types.min.js"></script>
     <style>
         .pressed { background-color: lightgrey; }
     </style>
@@ -16,27 +16,109 @@
     <div id="root"></div>
     <script type="text/babel"> 
 
+
     const Header = () => {
       const styles = {
-
-      }
+        padding: '20px 0',
+        backgroundColor: 'rgba(255,255,255,0.2)', 
+        color: '#fff', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.3)', 
+        textShadow: '1px 1px 2px black', 
+        width: '100%', 
+        textAlign: 'center', 
+      };
       return (
         <header style={styles}>
-          WELCOME TO MY POWERLIFTING BLOG
+          BIENVENIDO A MI BLOG DE POWERLIFTING
         </header>
-      )
+      );
     }
 
     const Footer = () => {
       const styles = {
-
-      }
+        padding: '20px 0',
+        backgroundColor: 'rgba(255,255,255,0.2)', 
+        color: '#fff', 
+        boxShadow: '0 2px 4px rgba(0,0,0,0.3)', 
+        textShadow: '1px 1px 2px black',
+        width: '100%', 
+        textAlign: 'center', 
+        bottom: 0, 
+      };
       return (
         <footer style={styles}>
-          Copyright 2024 UVG
+          Derechos de autor 2024 UVG
         </footer>
-      )
+      );
     }
+        
+    const Card = ({
+      title, content, competitor_name, top_squat, top_bench, top_deadlift, category
+    }) => {
+      const defaultImageUrl = "/Images/powerlifting.jpg";
+      const cardStyle = {
+        margin: '10px',
+        backgroundColor: '#bab4b4',
+        borderRadius: '10px',
+        boxShadow: '0 2px 20px rgba(0, 0, 0, 0.2)',
+        overflow: 'hidden',
+        width: '300px', 
+        fontFamily: '"Roboto", sans-serif',
+      };
+      const cardHeaderStyle = {
+        width: '100%',
+        height: '200px', 
+        objectFit: 'cover', 
+      };
+      const cardBodyStyle = {
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        padding: '20px',
+        minHeight: '250px',
+      };
+      const tagStyle = {
+        background: '#9a9999',
+        borderRadius: '50px',
+        fontSize: '12px',
+        margin: '0',
+        color: '#fff',
+        padding: '2px 10px',
+        textTransform: 'uppercase',
+        cursor: 'pointer',
+      };
+      
+      const categoryStyles = {
+        teal: { backgroundColor: '#47bcd4' },
+        purple: { backgroundColor: '#5e76bf' },
+        pink: { backgroundColor: '#cd5b9f' },
+      };
+      const getCategoryStyle = (category) => {
+        const lowerCaseCategory = category.toLowerCase();
+        return categoryStyles[lowerCaseCategory] || tagStyle;
+      };
+
+      return (
+        <div style={cardStyle}>
+          <div className="card-header">
+            <img src={defaultImageUrl} alt="Powerlifting" style={cardHeaderStyle} />
+          </div>
+          <div className="card-body" style={cardBodyStyle}>
+            <span style={{...tagStyle, ...getCategoryStyle(category)}}>Categoría {category}</span>
+            <h4>{title}</h4>
+            <p>{content}</p>
+            <div className="user-info">
+              <p>Competidor: {competitor_name}</p>
+              <p>Top Squat: {top_squat}</p>
+              <p>Top Bench: {top_bench}</p>
+              <p>Top Deadlift: {top_deadlift}</p>
+            </div>
+          </div>
+        </div>
+      );
+    };
+
 
     const Post = ({
     title, content, competitor_name, top_squat, top_bench, top_deadlift, category
@@ -64,53 +146,91 @@
     );
     };
 
+    Post.propTypes = {
+        title: PropTypes.string.isRequired,
+        content: PropTypes.string.isRequired,
+        competitor_name: PropTypes.string.isRequired,
+        top_squat: PropTypes.string.isRequired,
+        top_bench: PropTypes.string.isRequired,
+        top_deadlift: PropTypes.string.isRequired,
+        category: PropTypes.string.isRequired
+      }
+
 
     const Posts = () => {
+        const containerStyle = {
+            display: 'flex',
+            flexWrap: 'wrap',
+            justifyContent: 'space-around',
+            maxWidth: '1280px',
+            margin: 'auto',
+        };
         const [posts, setPosts] = React.useState([]);
+        const [isLoading, setIsLoading] = React.useState(true); // Agrega un estado para manejar la carga
 
-      const getPosts = async () => {
-        const apiResponse = await fetch('https://api.tiburoncin.lat/22119/posts')
-        const jsonPosts = await apiResponse.json()
-        const formattedPosts = jsonPosts.map(
-          ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category }) => ({ title, content, competitor_name, top_squat, top_bench, top_deadlift, category })
-        ) 
-        setPosts(formattedPosts)
+        const getPosts = async () => {
+            setIsLoading(true); // Inicia la carga
+            try {
+                const apiResponse = await fetch('https://api.tiburoncin.lat/22119/posts');
+                if (!apiResponse.ok) {
+                    throw new Error(`HTTP error! Status: ${apiResponse.status}`);
+                }
+                const jsonPosts = await apiResponse.json();
+                setPosts(jsonPosts);
+            } catch (error) {
+                console.error("Error fetching posts:", error);
+                // Maneja el error aquí, si es necesario
+            } finally {
+                setIsLoading(false); // Finaliza la carga independientemente del resultado
+            }
+        };
 
-        
-      }
- 
-      React.useEffect(() => {
-        getPosts();
-    }, []);
+        React.useEffect(() => {
+            getPosts();
+        }, []);
 
-    if (posts.length === 0) {
-        return <div>Loading...</div>;
-    }
+        if (isLoading) {
+            return <div>Cargando...</div>;
+        }
 
-    return (
-        <div className="container">
-        {posts.map((post, index) => (
-            <Post key={index} {...post} />
-        ))}
-        </div>
-    );
-    }
+        if (!isLoading && posts.length === 0) {
+            // Muestra un "empty state" cuando no hay posts
+            return <div>No hay posts disponibles.</div>;
+        }
+
+        return (
+            <div style={containerStyle}>
+                {posts.map((post, index) => (
+                    <Card key={index} {...post} />
+                ))}
+            </div>
+        );
+    };
 
     const App = () => {
-      const styles = {
+      React.useEffect(() => {
+        document.body.style.margin = '0';
+        document.body.style.display = 'flex';
+        document.body.style.justifyContent = 'center';
+        document.body.style.alignItems = 'center';
+        document.body.style.backgroundColor = '#eaeaea';
+        document.body.style.fontFamily = '"Roboto", sans-serif';
+        document.body.style.color = '#10182f';
+        document.body.style.backgroundImage = 'linear-gradient(to right, #f7f8f9, #5a5454)';
+      }, []);
 
-      }
       return (
-        <main style={styles}>
+        <main>
           <Header />
           <Posts />
           <Footer />
         </main>
-      )
+      );
     }
 
-    const root = ReactDOM.createRoot(document.getElementById('root'))
-    root.render(<App />)
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+      
     </script>
 </body>
 </html>
