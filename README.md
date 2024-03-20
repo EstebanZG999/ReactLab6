@@ -1,5 +1,7 @@
 # Powerlifting Blog
 
+[Link a mi tarea en tiburoncin.lat](https://tiburoncin.lat/22119/ReactLabWeb/)
+
 ## Descripción
 
 Este proyecto es un blog dedicado al mundo del powerlifting, construido utilizando React. El blog presenta características como la visualización de posts, manejo de estados de carga y error, y un diseño responsivo. Los usuarios pueden leer sobre competiciones, técnicas de entrenamiento, y consejos de nutrición específicos para powerlifters.
